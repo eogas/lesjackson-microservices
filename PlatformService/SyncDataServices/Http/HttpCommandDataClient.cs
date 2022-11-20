@@ -23,15 +23,15 @@ public class HttpCommandDataClient : ICommandDataClient
             mediaType: "application/json"
         );
 
-        var response = await httpClient.PostAsync($"{configuration["CommandService"]}", httpContent);
+        var response = await httpClient.PostAsync($"{configuration["CommandsService"]}", httpContent);
         
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("--> Sync POST to CommandService was OK!");
+            Console.WriteLine("--> Sync POST to CommandsService was OK!");
         }
         else
         {
-            Console.WriteLine("--> Sync POST to CommandService was NOT OK!");
+            Console.WriteLine("--> Sync POST to CommandsService was NOT OK!");
         }
     }
 }

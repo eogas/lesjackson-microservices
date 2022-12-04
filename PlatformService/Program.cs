@@ -5,8 +5,20 @@ using PlatformService.SyncDataServices.Http;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseInMemoryDatabase("InMemory"));
+if (builder.Environment.IsProduction())
+{
+    Console.WriteLine("--> Using SQL Server DB");
+
+    var connectionString = builder.Configuration.GetConnectionString("PlatformsConn");
+    builder.Services.AddDbContext<AppDbContext>(
+        options => options.UseSqlServer(connectionString));
+}
+else
+{
+    Console.WriteLine("--> Using InMemory DB");
+    builder.Services.AddDbContext<AppDbContext>(
+        options => options.UseInMemoryDatabase("InMemory"));
+}
 
 builder.Services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
 
@@ -34,7 +46,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-PrepDb.PrepPopulation(app);
+PrepDb.PrepPopulation(app, builder.Environment.IsProduction());
 
 Console.WriteLine($"--> Command service endpoint {builder.Configuration["CommandsService"]}");
 
